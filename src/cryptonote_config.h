@@ -37,24 +37,29 @@
 
 #define CRYPTONOTE_MAX_BLOCK_NUMBER                     500000000
 #define CRYPTONOTE_MAX_BLOCK_SIZE                       500000000  // block header blob limit, never used!
-#define CRYPTONOTE_GETBLOCKTEMPLATE_MAX_BLOCK_SIZE	196608 //size of block (bytes) that is the maximum that miners will produce
+#define CRYPTONOTE_GETBLOCKTEMPLATE_MAX_BLOCK_SIZE      196608 //size of block (bytes) that is the maximum that miners will produce
 #define CRYPTONOTE_MAX_TX_SIZE                          1000000000
 #define CRYPTONOTE_PUBLIC_ADDRESS_TEXTBLOB_VER          0
 #define CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW            18
 #define CURRENT_TRANSACTION_VERSION                     2
 #define CURRENT_BLOCK_MAJOR_VERSION                     1
 #define CURRENT_BLOCK_MINOR_VERSION                     0
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              60*5
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT              60*2
+
 #define CRYPTONOTE_DEFAULT_TX_SPENDABLE_AGE             10
 
 #define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW               60
+#define BLOCKCHAIN_TIMESTAMP_CHECK_WINDOW_V12           30
 
-// MONEY_SUPPLY - total number coins to be generated
-#define MONEY_SUPPLY_ETN                               ((uint64_t)(2100000000000)) // ETN MONEY_SUPPLY
-#define MONEY_SUPPLY                                   ((uint64_t)(21000000000000)) // after the ETNX fork
+// Total number coins to be generated
+#define MONEY_SUPPLY_ETN                                ((uint64_t)(2100000000000)) // ETN MONEY_SUPPLY
+#define MONEY_SUPPLY                                    ((uint64_t)(21000000000000)) // after the ETNX fork
+#define TOKENS                                          ((uint64_t)(20000000000000)) // after the first 10BB ETNX Coin Burn
+// Number of smallest units in one coin
+#define COIN                                            ((uint64_t)100) // pow(10, 2)
 
 #define EMISSION_SPEED_FACTOR_PER_MINUTE                (20)
-#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)0) // 0 * pow(10, 0)
+#define FINAL_SUBSIDY_PER_MINUTE                        ((uint64_t)10000000) // 100k coins
 
 #define CRYPTONOTE_REWARD_BLOCKS_WINDOW                 100
  
@@ -63,11 +68,9 @@
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE_V5    300000 //size of block (bytes) after which reward for block calculated using block size - second change, from v5
 #define CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE          600
 #define CRYPTONOTE_DISPLAY_DECIMAL_POINT                2
-// COIN - number of smallest units in one coin
-#define COIN                                            ((uint64_t)100) // pow(10, 2)
 
-#define CRYPTONOTE_TX_FEE_RESERVED_SIZE               3
-#define CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5           21
+#define CRYPTONOTE_TX_FEE_RESERVED_SIZE                 3
+#define CRYPTONOTE_BLOCK_FEE_REWARD_ZONE_V5             21
 
 #define FEE_PER_KB_OLD                                  ((uint64_t)10) // .1 * pow(10, 1)
 #define FEE_PER_KB_V2                                   ((uint64_t)40) // .4 * pow(10, 1)
@@ -82,13 +85,19 @@
 #define DIFFICULTY_WINDOW                               720 // blocks
 #define DIFFICULTY_LAG                                  15  // !!!
 #define DIFFICULTY_CUT                                  60  // timestamps to cut after sorting
+#define DIFFICULTY_CUT_V1                               60  // timestamps to cut after sorting
+#define DIFFICULTY_CUT_V2                               6   // timestamps to cut after sorting
 #define DIFFICULTY_BLOCKS_COUNT                         DIFFICULTY_WINDOW + DIFFICULTY_LAG
 
 #define DIFFICULTY_TARGET_V2                            120  // seconds
-#define DIFFICULTY_WINDOW_V2                            60
+#define DIFFICULTY_WINDOW_V2                            70
+#define DIFFICULTY_WINDOW_V3                            60
+#define DIFFICULTY_TARGET_V12                           DIFFICULTY_WINDOW_V2 
 #define DIFFICULTY_BLOCKS_COUNT_V2                      DIFFICULTY_WINDOW_V2
-#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2           300*2 // https://github.com/zawy12/difficulty-algorithms/issues/3
-
+#define DIFFICULTY_BLOCKS_COUNT_V3                      DIFFICULTY_WINDOW_V3
+#define DIFFICULTY_BLOCKS_COUNT_V12                     DIFFICULTY_WINDOW_V2
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V2           DIFFICULTY_TARGET * 2 // https://github.com/zawy12/difficulty-algorithms/issues/3
+#define CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT_V12          60*5
 
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V1   DIFFICULTY_TARGET_V1 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
 #define CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_SECONDS_V2   DIFFICULTY_TARGET_V2 * CRYPTONOTE_LOCKED_TX_ALLOWED_DELTA_BLOCKS
@@ -101,8 +110,8 @@
 #define BLOCKS_SYNCHRONIZING_DEFAULT_COUNT_PRE_V4       100    //by default, blocks count in blocks downloading
 #define BLOCKS_SYNCHRONIZING_DEFAULT_COUNT              20     //by default, blocks count in blocks downloading
 
-#define CRYPTONOTE_MEMPOOL_TX_LIVETIME                    (86400*3) //seconds, three days
-#define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME     604800 //seconds, one week
+#define CRYPTONOTE_MEMPOOL_TX_LIVETIME                  (86400*5) //seconds, five days
+#define CRYPTONOTE_MEMPOOL_TX_FROM_ALT_BLOCK_LIVETIME   604800    //seconds, one week
 
 #define COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT           1000
 
@@ -130,14 +139,14 @@
 
 #define ALLOW_DEBUG_COMMANDS
 
-#define CRYPTONOTE_NAME                         "electronero"
-#define CRYPTONOTE_POOLDATA_FILENAME            "poolstate.bin"
-#define CRYPTONOTE_BLOCKCHAINDATA_FILENAME      "data.mdb"
-#define CRYPTONOTE_BLOCKCHAINDATA_LOCK_FILENAME "lock.mdb"
-#define P2P_NET_DATA_FILENAME                   "p2pstate.bin"
-#define MINER_CONFIG_FILE_NAME                  "miner_conf.json"
+#define CRYPTONOTE_NAME                                 "electronero"
+#define CRYPTONOTE_POOLDATA_FILENAME                    "poolstate.bin"
+#define CRYPTONOTE_BLOCKCHAINDATA_FILENAME              "data.mdb"
+#define CRYPTONOTE_BLOCKCHAINDATA_LOCK_FILENAME         "lock.mdb"
+#define P2P_NET_DATA_FILENAME                           "p2pstate.bin"
+#define MINER_CONFIG_FILE_NAME                          "miner_conf.json"
 
-#define THREAD_STACK_SIZE                       5 * 1024 * 1024
+#define THREAD_STACK_SIZE                               5 * 1024 * 1024
 
 // coin emission change interval/speed configs
 #define CRYPTONOTE_BLOCK_GRANTED_FULL_REWARD_ZONE       240 * 1024    // 240kB, used for emissions
@@ -148,22 +157,23 @@
 #define PEAK_COIN_EMISSION_YEAR                         4
 #define PEAK_COIN_EMISSION_HEIGHT                       ((uint64_t) (((12 * 30.4375 * 24 * 3600)/DIFFICULTY_TARGET) * PEAK_COIN_EMISSION_YEAR)) // = (# of heights emmitted per year) * PEAK_COIN_EMISSION_YEAR
 
-#define HARD_FORK_CLAMP                         1
-#define HF_VERSION_DYNAMIC_FEE                  100
-#define HF_VERSION_ENFORCE_RCT                  6
-#define HF_VERSION_MIN_MIXIN_4                  7
-#define HF_VERSION_MIN_MIXIN_6                  8
+#define HARD_FORK_SPLIT                                 0 
 
-#define CRYPTONOTE_RINGDB_DIR                   ".shared-electronero-ringdb" // shared-ringdb"
+#define HF_VERSION_DYNAMIC_FEE                          100
+#define HF_VERSION_ENFORCE_RCT                          6
+#define HF_VERSION_MIN_MIXIN_4                          7
+#define HF_VERSION_MIN_MIXIN_6                          8
 
-#define MIN_MIXIN                               1      // minimum mixin allowed
-#define MAX_MIXIN                               100    // maximum mixin allowed
-#define DEFAULT_MIXIN                           12     // default mixin
-#define PER_KB_FEE_QUANTIZATION_DECIMALS        8
+#define CRYPTONOTE_RINGDB_DIR                           ".shared-etnx-ringdb" // shared-ringdb"
 
-#define HASH_OF_HASHES_STEP                     256
+#define MIN_MIXIN                                       1      // minimum mixin allowed
+#define MAX_MIXIN                                       100    // maximum mixin allowed
+#define DEFAULT_MIXIN                                   12     // default mixin
+#define PER_KB_FEE_QUANTIZATION_DECIMALS                8
 
-#define DEFAULT_TXPOOL_MAX_SIZE                 648000000ull // 3 days at 300000, in bytes
+#define HASH_OF_HASHES_STEP                             256
+
+#define DEFAULT_TXPOOL_MAX_SIZE                         648000000ull // 3 days at 300000, in bytes
 
 // New constants are intended to go here
 namespace config
@@ -177,11 +187,11 @@ namespace config
   uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
   uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
   uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
-  uint16_t const P2P_DEFAULT_PORT = 44080;
-  uint16_t const RPC_DEFAULT_PORT = 44081;
-  uint16_t const ZMQ_RPC_DEFAULT_PORT = 44082;
+  uint16_t const P2P_DEFAULT_PORT = 12089;
+  uint16_t const RPC_DEFAULT_PORT = 12090;
+  uint16_t const ZMQ_RPC_DEFAULT_PORT = 12091;
   boost::uuids::uuid const NETWORK_ID = { {
-      0x04, 0xF8, 0x23, 0xE1, 0x66, 0xC2, 0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C, 0x85, 0x8E, 0xC8, 0x39
+      0xF3 ,0xF3, 0xF3, 0xF3 , 0xF3, 0xF3 , 0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C, 0x85, 0x8E, 0xC8, 0x39
     } }; // Bender's nightmare
   std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
   uint32_t const GENESIS_NONCE = 10000;
@@ -205,16 +215,16 @@ namespace config
   namespace stagenet
   {
     uint64_t const STAGENET_SEGREGATION_FORK_HEIGHT = 1000000;
-    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 1078;
-    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 19;
+    uint64_t const CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 18018;
+    uint64_t const CRYPTONOTE_PUBLIC_INTEGRATED_ADDRESS_BASE58_PREFIX = 18019;
     uint64_t const CRYPTONOTE_PUBLIC_SUBADDRESS_BASE58_PREFIX = 42;
-    uint16_t const P2P_DEFAULT_PORT = 30080;
-    uint16_t const RPC_DEFAULT_PORT = 30081;
-    uint16_t const ZMQ_RPC_DEFAULT_PORT = 30082;
+    uint16_t const P2P_DEFAULT_PORT = 12080;
+    uint16_t const RPC_DEFAULT_PORT = 12081;
+    uint16_t const ZMQ_RPC_DEFAULT_PORT = 14082;
     boost::uuids::uuid const NETWORK_ID = { {
-        0x3d, 0x19, 0x8, 0x49 , 0x4f, 0xe3 , 0x14, 0x4b, 0x31, 0xe2, 0x41, 0x11, 0x2c, 0x10, 0x51, 0x19
+        0x04, 0xF8, 0x23, 0xE1, 0x66, 0xC2, 0xE3, 0xA4, 0xEA, 0x5D, 0xD1, 0x2C, 0x85, 0x8E, 0xC8, 0x41
       } }; // Bender's daydream
-    std::string const GENESIS_TX = "013201ff0001ffffffffffff03029b2e4c0281c0b02e7c53291a94d1d0cbff8883f8024f5142ee494ffbbd0880712101683a6913ce0c990e9b646a23c6c960d5c3642ca1b375fb2f4793212c52b3167f";
+    std::string const GENESIS_TX = "011201ff00011e026bc5c7db8a664f652d78adb587ac4d759c6757258b64ef9cba3c0354e64fb2e42101abca6a39c561d0897be183eb0143990eba201aa7d2c652ab0555d28bb4b70728";
     uint32_t const GENESIS_NONCE = 10002;
   }
 }

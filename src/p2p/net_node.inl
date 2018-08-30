@@ -49,22 +49,15 @@
 #include "storages/levin_abstract_invoke2.h"
 #include "cryptonote_core/cryptonote_core.h"
 
-// We have to look for miniupnpc headers in different places, dependent on if its compiled or external
-#ifdef UPNP_STATIC
-  #include <miniupnpc/miniupnpc.h>
-  #include <miniupnpc/upnpcommands.h>
-  #include <miniupnpc/upnperrors.h>
-#else
-  #include "miniupnpc.h"
-  #include "upnpcommands.h"
-  #include "upnperrors.h"
-#endif
+#include <miniupnp/miniupnpc/miniupnpc.h>
+#include <miniupnp/miniupnpc/upnpcommands.h>
+#include <miniupnp/miniupnpc/upnperrors.h>
 
 #undef MONERO_DEFAULT_LOG_CATEGORY
 #define MONERO_DEFAULT_LOG_CATEGORY "net.p2p"
 
 #define NET_MAKE_IP(b1,b2,b3,b4)  ((LPARAM)(((DWORD)(b1)<<24)+((DWORD)(b2)<<16)+((DWORD)(b3)<<8)+((DWORD)(b4))))
-#define MIN_WANTED_SEED_NODES 6
+#define MIN_WANTED_SEED_NODES 12
 
 namespace nodetool
 {
@@ -377,49 +370,57 @@ namespace nodetool
     std::set<std::string> full_addrs;
     if (nettype == cryptonote::TESTNET)
     {
-      full_addrs.insert("159.203.28.200:30080");
-      full_addrs.insert("128.199.85.61:30080");
-      full_addrs.insert("46.101.40.29:30080");
-      full_addrs.insert("46.101.76.70:30080");
-      full_addrs.insert("104.236.175.63:30080");
-      full_addrs.insert("165.227.189.226:30080");
-      full_addrs.insert("138.68.175.185:30080");
-      full_addrs.insert("167.99.228.39:30080");
-      full_addrs.insert("144.202.59.175:30080");
-      full_addrs.insert("45.77.238.34:30080");
+      full_addrs.insert("85.119.151.210:11111"); // https://etnx.crypto-pool.pro
+      full_addrs.insert("46.101.40.29:11111"); // https://uspool.electronero.org
+      full_addrs.insert("104.236.175.63:11111");
+      full_addrs.insert("174.138.15.35:11111");
+      full_addrs.insert("165.227.189.226:11111"); // https://pool.electronero.org
+      full_addrs.insert("178.128.248.192:11111");
+      full_addrs.insert("178.128.248.101:11111");
+      full_addrs.insert("178.128.248.101:11111");
+      full_addrs.insert("178.128.47.24:11111");
+      full_addrs.insert("209.97.141.47:11111");
+      full_addrs.insert("178.128.196.241:11111");
+      full_addrs.insert("178.128.207.173:11111");
+      full_addrs.insert("167.99.183.220:11111"); 
+      full_addrs.insert("167.99.183.194:11111"); 
+      full_addrs.insert("93.91.118.9:11111"); // http://etnx.minexmr24.ru/
     }
     else if (nettype == cryptonote::STAGENET)
     {
-      full_addrs.insert("159.203.28.200:33080");
-      full_addrs.insert("128.199.85.61:33080");
-      full_addrs.insert("46.101.40.29:33080");
-      full_addrs.insert("46.101.76.70:33080");
-      full_addrs.insert("104.236.175.63:33080");
-      full_addrs.insert("165.227.189.226:33080");
-      full_addrs.insert("138.68.175.185:33080");
-      full_addrs.insert("167.99.228.39:33080");
-      full_addrs.insert("144.202.59.175:33080");
-      full_addrs.insert("45.77.238.34:33080");
+      full_addrs.insert("85.119.151.210:12080"); // https://pool.electronero.ru
+      full_addrs.insert("46.101.40.29:12080"); // https://uspool.electronero.org
+      full_addrs.insert("104.236.175.63:12080");
+      full_addrs.insert("174.138.15.35:12080");
+      full_addrs.insert("165.227.189.226:12080"); // https://pool.electronero.org
+      full_addrs.insert("178.128.248.192:12080");
+      full_addrs.insert("178.128.248.101:12080");
+      full_addrs.insert("178.128.248.101:12080");
+      full_addrs.insert("178.128.47.24:12080");
+      full_addrs.insert("209.97.141.47:12080");
+      full_addrs.insert("178.128.196.241:12080");
+      full_addrs.insert("178.128.207.173:12080");
+      full_addrs.insert("167.99.183.220:12080"); 
+      full_addrs.insert("167.99.183.194:12080"); 
+      full_addrs.insert("93.91.118.9:12080"); // http://etnx.minexmr24.ru/
     }
     else
-    { 
-      full_addrs.insert("159.203.28.200:44080");
-      full_addrs.insert("128.199.85.61:44080");
-      full_addrs.insert("46.101.40.29:44080");
-      full_addrs.insert("46.101.76.70:44080");
-      full_addrs.insert("104.236.175.63:44080");
-      full_addrs.insert("165.227.189.226:44080");
-      full_addrs.insert("138.68.175.185:44080");
-      full_addrs.insert("167.99.228.39:44080");
-      full_addrs.insert("144.202.59.175:44080");
-      full_addrs.insert("45.77.238.34:44080");
-      full_addrs.insert("94.130.207.37:4418");
-      full_addrs.insert("209.97.136.202:44080");
-      full_addrs.insert("108.249.146.109:44080");
-      full_addrs.insert("173.254.207.155:44080");
-      full_addrs.insert("172.24.1.165:44080");
-      full_addrs.insert("91.121.3.111:28888");
-
+    {
+      full_addrs.insert("46.101.40.29:12089"); // https://uspool.electronero.org
+      full_addrs.insert("104.236.175.63:12089");
+      full_addrs.insert("174.138.15.35:12089");
+      full_addrs.insert("165.227.189.226:12089"); // https://pool.electronero.org
+      full_addrs.insert("178.128.248.192:12089");
+      full_addrs.insert("178.128.248.101:12089");
+      full_addrs.insert("93.91.118.9:12089"); // http://etnx.minexmr24.ru/
+      full_addrs.insert("178.128.248.101:12089");
+      full_addrs.insert("178.128.47.24:12089");
+      full_addrs.insert("209.97.141.47:12089");
+      full_addrs.insert("178.128.196.241:12089");
+      full_addrs.insert("178.128.207.173:12089");
+      full_addrs.insert("167.99.183.220:12089"); 
+      full_addrs.insert("167.99.183.194:12089"); 
+      full_addrs.insert("85.119.151.210:12089"); // https://etnx.crypto-pool.pro
     }
     return full_addrs;
   }
@@ -511,7 +512,7 @@ namespace nodetool
         if (result.size())
         {
           for (const auto& addr_string : result)
-            full_addrs.insert(addr_string + ":44080");
+            full_addrs.insert(addr_string + ":" + std::to_string(m_nettype == cryptonote::TESTNET ? ::config::testnet::P2P_DEFAULT_PORT : m_nettype == cryptonote::STAGENET ? ::config::stagenet::P2P_DEFAULT_PORT : ::config::P2P_DEFAULT_PORT));
         }
         ++i;
       }
